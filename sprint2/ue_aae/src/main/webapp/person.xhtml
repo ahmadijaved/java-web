@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des Personnes</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Personnes</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>First Name</label>
+                <h:inputText value="#{personController.search.firstName}" />
+            </div>
+            <div class="cell">
+                <label>Last Name</label>
+                <h:inputText value="#{personController.search.lastName}" />
+            </div>
+            <div class="cell">
+                <label>Email</label>
+                <h:inputText value="#{personController.search.email}" />
+            </div>
+            <div style="clear:both">
+                <h:commandButton value="Rechecher"
+                                 action="#{personController.doSearch()}" >   
+                        <f:ajax execute="@form" render=":listF :detailF"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{personController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="first Name" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;"
+                                        action="#{personController.prepareEdit(item)}" 
+                                        value="#{item.firstName}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>         
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="last Name"  />
+                        </f:facet>
+                        <h:outputText value="#{item.lastName}" class="ListElement" 
+                                      style="width: 200px;" />
+                    </h:column> 
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Email" />
+                        </f:facet>
+                        <h:outputText value="#{item.email}" class="ListElement" 
+                                      style="width: 170px;" />
+                    </h:column>                
+                </h:dataTable>
+            </h:form>
+        </div>   
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Person</legend>
+                <div class="cell">
+                    <label>First Name</label>
+                    <h:inputText value="#{personController.selected.firstName}" />
+                </div>
+                <div class="cell">
+                    <label>Last Name</label>
+                    <h:inputText value="#{personController.selected.lastName}" />
+                </div>
+                <div class="cell">
+                    <label>Email</label>
+                    <h:inputText value="#{personController.selected.email}" />
+                </div>
+                <div class="cell">
+                    <label>Date</label>
+                    <h:inputText required="true" value="#{personController.selected.dateOfBirth}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:inputText>
+                </div>
+                <div style="clear:both;">
+                    <h:commandButton action="#{personController.doUpdate()}" 
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{personController.prepareCreate()}" 
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <h:commandButton action="#{personController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>

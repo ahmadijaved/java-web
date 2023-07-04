@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des OrganizedUe</ui:define>    
+    <ui:define name="top">
+        <h2> Gestion des OrganizedUe</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>Section</label>
+                <h:inputText value="#{organizedUeController.sectionName}" />
+            </div>
+            <div class="cell">
+                <label>Last Name</label>
+                <h:inputText value="#{organizedUeController.dateSco}" />
+            </div>
+            <div style="clear:both">
+                <h:commandButton value="Copier l'organisation"
+                                 action="#{organizedUeController.doCopy()}" >   
+                        <f:ajax execute="@form" render=":listF :detailF"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{organizedUeController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="ue" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;"
+                                        action="#{organizedUeController.prepareEdit(item)}" 
+                                        value="#{item.name}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>         
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Start date"  />
+                        </f:facet>
+                        <h:outputText value="#{item.startDate}" class="ListElement" 
+                                      style="width: 200px;" />
+                    </h:column> 
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="End Date" />
+                        </f:facet>
+                        <h:outputText value="#{item.endDate}" class="ListElement" 
+                                      style="width: 170px;" />
+                    </h:column>  
+                </h:dataTable>
+            </h:form>
+        </div>   
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>UeOrg</legend>
+                <div class="cell">
+                    <label>Section</label>
+                    <h:inputText readonly="true" value="#{organizedUeController.selected.ueId.sectionId.name}" />
+                 
+                </div>
+                <div class="cell">
+                    <label>Ue</label>
+                    <h:selectOneMenu value="#{organizedUeController.selected.ueId}">
+                        <f:selectItem itemLabel="Select One" itemValue="" />
+                        <f:selectItems value="#{organizedUeController.selected.ueList}" />
+                    </h:selectOneMenu>
+                </div>
+                <div class="cell">
+                    <label>Nom</label>
+                    <h:inputText value="#{organizedUeController.selected.name}" />
+                </div>
+                <div class="cell">
+                    <label>Niveau</label>
+                    <h:inputText value="#{organizedUeController.selected.levelId.name}" />
+                </div>
+                <div class="cell">
+                    <label>Date début</label>
+                     <h:inputText required="true" value="#{organizedUeController.selected.startDate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:inputText>
+                </div>
+                <div class="cell">
+                    <label>Date Fin</label>
+                
+                     <h:inputText required="true" value="#{organizedUeController.selected.endDate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:inputText>
+                </div>
+                
+                <div class="cell">
+                    <label>les Enseignants de l'UE</label>
+                    <h:selectManyCheckbox value="#{organizedUeController.selectedTeachers}">
+                        <f:selectItems value="#{organizedUeController.teachersByOrganizedUeSelected}" var="item" itemValue="#{item}" itemLabel="#{item.firstName}"/>
+                    </h:selectManyCheckbox>
+
+                </div>
+               
+                <div style="clear:both;">
+                    <h:commandButton action="#{organizedUeController.doUpdate()}" 
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{organizedUeController.prepareCreate()}" 
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <h:commandButton action="#{organizedUeController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>

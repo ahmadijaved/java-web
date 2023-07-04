@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des sections</ui:define>    
+    <ui:define name="top">
+        <h2> Gestion des sections</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{sectionController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="first Name" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;"
+                                        action="#{sectionController.prepareEdit(item)}" 
+                                        value="#{item.firstName}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>         
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Name"  />
+                        </f:facet>
+                        <h:outputText value="#{item.name}" class="ListElement" 
+                                      style="width: 200px;" />
+                    </h:column> 
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Description" />
+                        </f:facet>
+                        <h:outputText value="#{item.description}" class="ListElement" 
+                                      style="width: 170px;" />
+                    </h:column>                
+                </h:dataTable>
+            </h:form>
+        </div>
+        
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="pe" 
+                             value="#{personController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="first Name" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;" 
+                                        value="#{pe.firstName}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>         
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Email"  />
+                        </f:facet>
+                        <h:outputText value="#{pe.lastName}" class="ListElement" 
+                                      style="width: 200px;" />
+                    </h:column> 
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Description" />
+                        </f:facet>
+                        <h:outputText value="#{pe.email}" class="ListElement" 
+                                      style="width: 170px;" />
+                    </h:column>                
+                </h:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Section</legend>
+                <div class="cell">
+                    <label>Name</label>
+                    <h:inputText value="#{sectionController.selected.name}" />
+                </div>
+                <div class="cell">
+                    <label>Description</label>
+                    <h:inputText value="#{sectionController.selected.description}" />
+                </div>
+                <h:inputText style="display: none;" id="sectionSelected" value="#{sectionController.selected}" />
+                <div id="sectionCopy"></div>
+                <div style="clear:both;">
+                    <!--<h:commandButton onclick="copySection()" value="Copie" style="margin-top: 6px;"/>-->
+                    <h:commandButton action="#{sectionController.doCopy()}" 
+                                     value="Copie" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{personController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+                
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>
+
+<script type="text/javascript">
+    function copySection() {
+        var selectedSection = document.getElementById('sectionSelected').value;
+        document.getElementById('sectionCopy').innerHTML = 'la section copiée est : ' + selectedSection;
+        alert('La section est bien copié');
+    }
+</script>

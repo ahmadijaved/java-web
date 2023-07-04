@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des Catégories</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Catégories</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>Catégorie</label>
+                <h:inputText value="#{categoryController.search.name}" />
+            </div>
+            <div style="clear:both">
+                <h:commandButton value="Rechecher"
+                                 action="#{categoryController.doSearch()}" >   
+                        <f:ajax execute="@form" render=":listF :detailF"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{categoryController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Nom" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 200px;"
+                                        action="#{categoryController.prepareEdit(item)}" 
+                                        value="#{item.name}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>                      
+                </h:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Catégorie</legend>
+                <div class="cell">
+                    <label>Nom</label>
+                    <h:inputText value="#{categoryController.selected.name}" />
+                </div>
+                <div style="clear:both;">
+                    <h:commandButton action="#{categoryController.doUpdate()}" 
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{categoryController.prepareCreate()}" 
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <h:commandButton action="#{categoryController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des Catégories</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Catégories</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>Pays</label>
+                <h:inputText value="#{countryController.search.name}" />
+            </div>
+            <div class="cell">
+                <label>Capitale</label>
+                <h:inputText value="#{countryController.search.capital}" />
+            </div>
+            <div style="clear:both">
+                <h:commandButton value="Rechecher"
+                                 action="#{countryController.doSearch()}" >   
+                        <f:ajax execute="@form" render=":listF :detailF"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{countryController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Nom" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;"
+                                        action="#{countryController.prepareEdit(item)}" 
+                                        value="#{item.name}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>  
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Capital"  />
+                        </f:facet>
+                        <h:outputText value="#{item.capital}" class="ListElement" 
+                                      style="width: 150px;" >
+                        </h:outputText>
+                    </h:column>                 
+                </h:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Pays</legend>
+                <div class="cell">
+                    <label>Nom</label>
+                    <h:inputText value="#{countryController.selected.name}" />
+                </div>
+                <div class="cell">
+                    <label>Capital</label>
+                    <h:inputText value="#{countryController.selected.capital}" />
+                </div>                
+                <div style="clear:both;">
+                    <h:commandButton action="#{countryController.doUpdate()}" 
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{countryController.prepareCreate()}" 
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <h:commandButton action="#{countryController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>

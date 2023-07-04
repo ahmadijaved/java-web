@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"  
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des Commandes</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Commandes</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+        </h:form>
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <p:growl id="messages" showDetail="true" />
+            <h:panelGrid columnClasses="value">
+                <h3 style="margin-top: 0">Planning</h3>
+                <p:schedule id="schedule" 
+                            value="#{planningController.eventModel}" 
+                            widgetVar="myschedule" 
+                            initialDate="#{planningController.scheduleInitialDate}"
+                            style="width: 1000px;">
+                    <p:ajax event="dateSelect" listener="#{planningController.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                    <p:ajax event="eventSelect" listener="#{planningController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                    <p:ajax event="eventMove" listener="#{planningController.onEventMove}" update="messages" />
+                    <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messages" />
+                </p:schedule>
+            </h:panelGrid>
+            <p:dialog widgetVar="eventDialog" header="Event Details" 
+                      showEffect="clip" hideEffect="clip">
+                <h:panelGrid id="eventDetails" columns="2">
+                    <p:outputLabel for="title" value="Titles:" />
+                    <p:outputLabel id="title" value="#{planningController.event.title}" />
+
+                    <p:outputLabel for="buyer" value="Acheteur " />
+                    <h:selectOneMenu id="buyer" 
+                                     value="#{planningController.event.data.buyer}">
+                        <f:selectItems value="#{buyerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <p:outputLabel for="name" value="Nom " />
+                    <p:inputText id="name" value="#{planningController.event.data.name}" />
+
+                    <p:outputLabel for="startDate" value="Start Date" />
+                    <p:calendar id="startDate" value="#{planningController.event.startDate}" pattern="dd/MM/yyyy HH:mm"/>
+                    <p:outputLabel for="endDate" value="End Date" />
+                    <p:calendar id="endDate" value="#{planningController.event.endDate}" pattern="dd/MM/yyyy HH:mm"/>
+
+
+                    <p:outputLabel for="orderDate" value="Date Commande " />
+                    <p:calendar id="orderDate" value="#{planningController.event.data.orderDate}" pattern="dd/MM/yyyy HH:mm"/>
+
+                    <p:outputLabel for="deliveryDate" value="Date Livraison " />
+                    <p:calendar id="deliveryDate" value="#{planningController.event.data.deliveryDate}" pattern="dd/MM/yyyy HH:mm"/>
+
+                    <p:outputLabel for="allDay" value="All Day:" />
+                    <h:selectBooleanCheckbox id="allDay" value="#{planningController.event.allDay}" />
+
+                    <p:commandButton type="reset" value="Reset" />
+                    <p:commandButton id="addButton" value="Sauver" action="#{planningController.addEvent}" 
+                                     oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                </h:panelGrid>
+            </p:dialog>    
+        </h:form>
+    </ui:define>
+</ui:composition>

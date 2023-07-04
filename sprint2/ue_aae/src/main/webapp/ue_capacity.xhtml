@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des Ue</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Ue</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>Name</label>
+                <h:inputText value="#{ueController.search.name}" />
+            </div>
+            <div class="cell">
+                <label>Code</label>
+                <h:inputText value="#{ueController.search.code}" />
+            </div>
+            <div class="cell">
+                <label>Description</label>
+                <h:inputText value="#{ueController.search.description}" />
+            </div>
+            <div style="clear:both">
+                <h:commandButton value="Rechecher"
+                                 action="#{ueController.doSearch()}" >   
+                        <f:ajax execute="@form" render=":listF :detailF"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{ueController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Name" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;"
+                                        action="#{ueController.prepareEdit(item)}" 
+                                        value="#{item.name}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>         
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Code"  />
+                        </f:facet>
+                        <h:outputText value="#{item.code}" class="ListElement" 
+                                      style="width: 100px;" />
+                    </h:column> 
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Description" />
+                        </f:facet>
+                        <h:outputText value="#{item.description}" class="ListElement" 
+                                      style="width: 280PX;" />
+                    </h:column>                
+                </h:dataTable>
+            </h:form>
+        </div>   
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Ue</legend>
+                <div class="cell">
+                    <label>Code</label>
+                    <h:inputText value="#{ueController.selected.code}" />
+                </div>
+                <div class="cell">
+                    <label>Name</label>
+                    <h:inputText value="#{ueController.selected.name}" />
+                </div>
+                <div class="cell">
+                    <label>Description</label>
+                    <h:inputTextarea cols="38" value="#{ueController.selected.description}" />
+                </div>
+                
+                <div  style="clear:both;">
+                    <h:dataTable 
+                        value="#{ueController.selected.capacityList1}" var="cl" border="1">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Name"/>
+                            </f:facet>
+                            <h:inputText style="width: 100px;" 
+                                         value="#{cl.name}" >
+                            </h:inputText>
+                        </h:column>                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Description"/>
+                            </f:facet>
+                            <h:inputText style="width: 100px;" 
+                                         value="#{cl.description}" >
+
+                            </h:inputText>
+                        </h:column>                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value=""/>
+                            </f:facet>
+                            <h:commandButton style="width: 100px;"
+                                             action="#{ueController.doOLRemove(cl)}" 
+                                             value="Supprimer"
+                                             />
+                        </h:column>
+                    </h:dataTable>
+                    <h:commandButton action="#{ueController.doOLNew()}" 
+                                     value="Nouvelle Capacité"/>
+                </div>
+                
+                <div style="clear:both;">
+                    <h:commandButton action="#{ueController.doUpdate()}" 
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{ueController.prepareCreate()}" 
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <h:commandButton action="#{ueController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des Acheteurs</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Acheteurs</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>Acheteur</label>
+                <h:inputText value="#{buyerController.search.name}" />
+            </div>
+            <div class="cell">
+                <label>Prénom</label>
+                <h:inputText value="#{buyerController.search.firstName}" />
+            </div>
+            <div class="cell">
+                <label>Adresse</label>
+                <h:inputText value="#{buyerController.search.address}" />
+            </div>
+            <div style="clear:both">
+                <h:commandButton value="Rechecher"
+                                 action="#{buyerController.doSearch()}" >   
+                        <f:ajax execute="@form" render=":listF :detailF"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{buyerController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Nom" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;"
+                                        action="#{buyerController.prepareEdit(item)}" 
+                                        value="#{item.name}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>         
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Prénom"  />
+                        </f:facet>
+                        <h:outputText value="#{item.firstName}" class="ListElement" 
+                                      style="width: 100px;" />
+                    </h:column> 
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Adresse" />
+                        </f:facet>
+                        <h:outputText value="#{item.address}" class="ListElement" 
+                                      style="width: 180px;" />
+                    </h:column>                
+                </h:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Acheteur</legend>
+                <div class="cell">
+                    <label>Nom</label>
+                    <h:inputText value="#{buyerController.selected.name}" />
+                </div>
+                <div class="cell">
+                    <label>Prénom</label>
+                    <h:inputText value="#{buyerController.selected.firstName}" />
+                </div>
+                <div class="cell">
+                    <label>Adresse</label>
+                    <h:inputText value="#{buyerController.selected.address}" />
+                </div>
+                <div class="cell">
+                    <label>Pays</label>
+                    <h:selectOneMenu id="countrySOM"
+                                     value="#{buyerController.selected.country}" 
+                                     style="width : 290px;">
+                        <f:selectItems value="#{countryController.itemsAvailableSelectOne}" />
+                        <f:ajax render="province"
+                                listener="#{buyerController.listenerCountrySelected}"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="cell">
+                    <label>Etat/Province</label>
+                    <h:selectOneMenu id="province"
+                                     value="#{buyerController.selected.stateProvince}" 
+                                     style="width : 290px;">
+                        <f:selectItems value="#{buyerController.stateProvinceItems}" />
+                    </h:selectOneMenu>
+                </div> 
+                <div class="cell">
+                    <label>Réduction</label>
+                    <h:inputText value="#{buyerController.selected.discount}" />
+                </div>
+                <div style="clear:both;">
+                    <h:commandButton action="#{buyerController.doUpdate()}" 
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{buyerController.prepareCreate()}" 
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <h:commandButton action="#{buyerController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>

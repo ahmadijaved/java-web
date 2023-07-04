@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="title">Gestion des Articles</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Articles</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>Article</label>
+                <h:inputText value="#{articleController.search.name}" />
+            </div>
+            <div class="cell">
+                <label>Description</label>
+                <h:inputText value="#{articleController.search.description}" />
+            </div>
+            <div class="cell">
+                <label>Catégorie</label>
+                <h:inputText value="#{articleController.search.category}" />
+            </div>
+            <div style="clear:both">
+                <h:commandButton value="Rechecher"
+                                 action="#{articleController.doSearch()}" >   
+                        <f:ajax execute="@form" render=":listF :detailF"/>
+                </h:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <h:dataTable var="item" 
+                             value="#{articleController.items}" 
+                             cellspacing="0" 
+                             cellpadding="0" 
+                             border="0"
+                             class="dtTable">
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Nom" />
+                        </f:facet>
+                        <h:commandLink  class="ListElement" 
+                                        style="width: 80px;"
+                                        action="#{articleController.prepareEdit(item)}" 
+                                        value="#{item.name}" >
+                            <f:ajax execute="@form" render=":detailF"/>
+                        </h:commandLink>
+                    </h:column>         
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Description"  />
+                        </f:facet>
+                        <h:outputText value="#{item.description}" class="ListElement" 
+                                      style="width: 200px;" />
+                    </h:column> 
+                    <h:column class="dtTD" >
+                        <f:facet name="header">
+                            <h:outputText value="Category" />
+                        </f:facet>
+                        <h:outputText value="#{item.category.name}" class="ListElement" 
+                                      style="width: 80px;" />
+                    </h:column>                
+                </h:dataTable>
+            </h:form>
+        </div>   
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Article</legend>
+                <div class="cell">
+                    <label>Nom</label>
+                    <h:inputText value="#{articleController.selected.name}" />
+                </div>
+                <div class="cell">
+                    <label>Description</label>
+                    <h:inputText value="#{articleController.selected.description}" />
+                </div>
+                <div class="cell">
+                    <label>Catégorie</label>
+                    <h:selectOneMenu id="categorySOM"
+                                     value="#{articleController.selected.category}" 
+                                     style="width : 290px;">
+                        <f:selectItems value="#{categoryController.itemsAvailableSelectOne}" />
+                    </h:selectOneMenu>
+                </div>
+                <div style="clear:both;">
+                    <h:commandButton action="#{articleController.doUpdate()}" 
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <h:commandButton action="#{articleController.prepareCreate()}" 
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <h:commandButton action="#{articleController.doDelete()}" 
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>

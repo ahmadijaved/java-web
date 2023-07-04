@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui" >
+    <ui:define name="title">Gestion des Commandes</ui:define>    
+    <ui:define name="top">
+        <h2>Gestion des Commandes</h2>
+    </ui:define>
+    <ui:define name="menu">
+    </ui:define>
+    <ui:define name="search">
+        <h:form id="searchF">
+            <div class="cell">
+                <label>Nom</label>
+                <h:inputText value="#{ordersController.search.name}" />
+            </div>
+            <div class="cell">
+                <label>Date Commande</label>
+                <h:inputText value="#{ordersController.search.orderDate}" />
+            </div>
+            <div class="cell">
+                <label>Date Livraison</label>
+                <h:inputText value="#{ordersController.search.deliveryDate}" />
+            </div>
+            <div class="cell">
+                <label>Acheteur</label>
+                <h:inputText value="#{ordersController.search.buyer}" />
+            </div>
+            <div class="cell">
+                <label>Article</label>
+                <h:inputText value="#{ordersController.search.article}" />
+            </div>            
+            <div style="clear:both">
+                <p:commandButton value="Rechecher"
+                                 action="#{ordersController.doSearch()}" 
+                                 update="listF detailF"/>   
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="list">
+        <div id="list">
+            <h:form id="listF">
+                <p:dataTable var="item" 
+                             value="#{ordersController.items}" 
+                             selection="#{ordersController.selected}" 
+                             class="dtTable"
+                             rowKey="#{item.id}"
+                             selectionMode="single"                         
+                             >
+                    <p:ajax event="rowSelect" update="detailF"/>
+                    <p:column headerText="nom" class="dtTD" >
+                        <h:outputText value="#{item.name}" />                   
+                    </p:column>         
+                    <p:column headerText="Date de Commande" class="dtTD" >
+                        <h:outputText value="#{item.orderDate}" class="ListElement" 
+                                      style="width: 150px;" >
+                            <f:convertDateTime pattern="dd-MM-yyyy" />
+                        </h:outputText>
+                    </p:column> 
+                    <p:column headerText="Date de Livraison" class="dtTD" >
+                        <h:outputText value="#{item.deliveryDate}" class="ListElement" 
+                                      style="width: 150px;" >
+                            <f:convertDateTime pattern="dd-MM-yyyy" />
+                        </h:outputText>
+                    </p:column>                
+                </p:dataTable>
+            </h:form>
+        </div>
+    </ui:define>
+    <ui:define name="detail">
+        <h:form id="detailF">
+            <fieldset>
+                <legend>Article</legend>
+                <div class="cell">
+                    <label>Acheteur</label>
+                    <h:selectOneMenu id="buyer" 
+                                     value="#{ordersController.selected.buyer}">
+                        <f:selectItems value="#{buyerController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="cell">
+                    <label>Nom</label>
+                    <h:inputText value="#{ordersController.selected.name}" />
+                </div>
+                <div class="cell">
+                    <label>Date Commande</label>
+                    <h:inputText value="#{ordersController.selected.orderDate}" >
+                        <f:convertDateTime pattern="dd-MM-yyyy" />
+                    </h:inputText>
+                </div>
+                <div class="cell">
+                    <label>Date Livraison</label>
+                    <h:inputText value="#{ordersController.selected.deliveryDate}" >
+                        <f:convertDateTime pattern="dd-MM-yyyy" />
+                    </h:inputText>
+                </div>
+                <br />
+                <div  style="clear:both;">
+                    <p:dataTable id="olList"
+                                 value="#{ordersController.selected.orderLines}" var="ol"> 
+                        <p:column  headerText="Article">
+                            <p:selectOneMenu id="article" 
+                                             value="#{ol.article}">
+                                <f:selectItems value="#{articleController.itemsAvailableSelectOne}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Prix">
+                            <h:inputText style="width: 100px;" 
+                                         value="#{ol.price}" >
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:inputText>
+                        </p:column>                        
+                        <p:column headerText="Quantité">
+                            <h:inputText style="width: 100px;" 
+                                         value="#{ol.quantity}" >
+
+                            </h:inputText>
+                        </p:column>                        
+                        <p:column headerText="">
+                            <p:commandButton style="width: 100px;"
+                                             action="#{ordersController.doOLRemove(ol)}" 
+                                             update="olList"
+                                             value="Supprimer"
+                                             />
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton action="#{ordersController.doOLNew()}" 
+                                     update="olList"
+                                     value="Nouvelle Ligne de Commande"/>
+                </div>
+                <div style="clear:both;">
+                    <p:commandButton action="#{ordersController.doUpdate()}"
+                                     update="listF detailF"
+                                     value="Sauver" style="margin-top: 6px;"/>
+                    <p:commandButton action="#{ordersController.prepareCreate()}" 
+                                     update="listF detailF"
+                                     value="Nouveau" style="margin-top: 6px;"/>                        
+                    <p:commandButton action="#{ordersController.doDelete()}" 
+                                     update="listF detailF"
+                                     value="Supprimer" style="margin-top: 6px;"/>
+                </div>
+            </fieldset>
+        </h:form>            
+    </ui:define>
+</ui:composition>
